@@ -16,7 +16,10 @@
         "glslify": "^7.1.1",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-redux": "^8.0.4",
         "react-scripts": "5.0.1",
+        "redux": "^4.2.0",
+        "redux-thunk": "^2.4.1",
         "sass": "^1.55.0",
         "three": "^0.146.0",
         "typescript": "^4.8.4",
@@ -48,6 +51,9 @@
         ]
     },
     "devDependencies": {
+        "@types/react-redux": "^7.1.24",
+        "@types/redux": "^3.6.0",
+        "@types/redux-thunk": "^2.1.0",
         "@types/three": "^0.144.0",
         "@typescript-eslint/eslint-plugin": "^5.40.1",
         "@typescript-eslint/parser": "^5.40.1",
