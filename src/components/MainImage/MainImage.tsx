@@ -36,48 +36,49 @@ const MainImage = ({ planeScaleX }: scale) => {
         setUvRate1Y(h / w);
     }
 
-    const [progressVar, setProgressVar] = useState(1);
+    let i = 1;
+    let j = 0;
 
-    window.addEventListener('click', updateProgress);
+    const [progressVar, setProgressVar] = useState(0);
+    const [counter, setCounter] = useState(false);
+
+    window.addEventListener('click', setCounterFunc);
+
+    useEffect(() => {
+        updateProgress();
+    }, [counter]);
+
+    function setCounterFunc() {
+        setCounter(!counter);
+    }
+
+    function stopInterval(myInterval: any) {
+        clearInterval(myInterval);
+    }
 
     function updateProgress() {
-        // if (progressVar === 1) {
-        //     for (let i = 1; i >= 0; i -= 0.05) {
-        //         setTimeout(() => {}, 20);
-        //         setProgressVar(i);
-        //         console.log(i);
-        //     }
-        //     setProgressVar(0);
-        //     console.log(progressVar);
-        // }
-        // if (progressVar === 0) {
-        //     for (let i = 0; i <= 1.05; i += 0.05) {
-        //         setTimeout(() => {}, 20);
-        //         setProgressVar(i);
-        //         console.log(i);
-        //     }
-        //     setProgressVar(1);
-        //     console.log(progressVar);
-        // }
-        if (progressVar === 0) {
-            let i = 0;
-            if (i <= 1.05) {
-                setTimeout(() => {
-                    Math.floor((i += 0.05));
-                    setProgressVar(i);
-                    console.log(i);
-                }, 20);
-            }
-        }
         if (progressVar === 1) {
-            let i = 1;
-            if (i >= 0) {
-                setTimeout(() => {
-                    Math.floor((i -= 0.05));
-                    setProgressVar(i);
-                    console.log(i);
-                }, 20);
-            }
+            const myInterval = setInterval(() => {
+                i = +(i - 0.025).toFixed(2);
+                setProgressVar(i);
+                // console.log('progress = ', progressVar, 'i=', i, 'j=', j);
+                if (i <= 0) {
+                    stopInterval(myInterval);
+                }
+            }, 20);
+            setProgressVar(0);
+        }
+
+        if (progressVar === 0) {
+            const myInterval = setInterval(() => {
+                j = +(j + 0.025).toFixed(2);
+                setProgressVar(j);
+
+                if (j >= 1) {
+                    stopInterval(myInterval);
+                    setProgressVar(1);
+                }
+            }, 20);
         }
     }
 
@@ -86,6 +87,8 @@ const MainImage = ({ planeScaleX }: scale) => {
         {
             progress: 0,
             time: 0,
+            pixels: new THREE.Vector2(),
+            accel: new THREE.Vector2(),
             uTexture1: new THREE.Texture(),
             uTexture2: new THREE.Texture(),
             uvRate1: new THREE.Vector2(),
@@ -96,17 +99,22 @@ const MainImage = ({ planeScaleX }: scale) => {
 
     extend({ PlaneMaterial });
 
-    const [image1] = useLoader(THREE.TextureLoader, ['./image1.jpeg']);
-    const [image2] = useLoader(THREE.TextureLoader, ['./image2.png']);
+    const [image1] = useLoader(THREE.TextureLoader, ['./im2.jpg']);
+    const [image2] = useLoader(THREE.TextureLoader, ['./im3.jpg']);
 
     return (
         <mesh>
             <planeGeometry args={[planeScaleX, 1, 1, 1]} />
+            {/* <sphereGeometry args={[0.5, 15, 32]} /> */}
             <planeMaterial
                 uTexture1={image1}
                 uTexture2={image2}
                 progress={progressVar}
                 uvRate1={new THREE.Vector2(1, uvRate1Y)}
+                pixels={
+                    new THREE.Vector2(window.innerHeight, window.innerWidth)
+                }
+                accel={new THREE.Vector2(0.5, 2.0)}
             />
         </mesh>
     );
